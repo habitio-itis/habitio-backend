@@ -1,0 +1,23 @@
+log:
+  level: ${LOGGING_LEVEL:INFO}
+  json:
+    enabled: ${LOGGING_JSON_ENABLED:true}
+
+spring:
+  application:
+    name: habitio-backend
+
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    properties:
+      hibernate.default_schema: ${DEFAULT_SCHEMA_NAME:habitio}
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: ${JDBC_URL}
+    username: ${JDBC_USER}
+    password: ${JDBC_PASSWORD}
+
+server:
+  port: ${SERVER_PORT:8081}
