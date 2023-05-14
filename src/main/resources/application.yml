@@ -21,3 +21,8 @@ spring:
 
 server:
   port: ${SERVER_PORT:8081}
+
+application:
+  accessTokenExpirationMillis: 86400000
+  refreshTokenExpirationMillis: 604800000
+  jwtSecret: ${JWT_SECRET:123456}
