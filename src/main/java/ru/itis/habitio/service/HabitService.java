@@ -5,22 +5,17 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import ru.itis.habitio.entity.HabitEntity;
-import ru.itis.habitio.entity.UserEntity;
 import ru.itis.habitio.entity.UsersHabitsEntity;
 import ru.itis.habitio.exception.NotFoundException;
 import ru.itis.habitio.repository.HabitRepository;
 import ru.itis.habitio.repository.UserHabitsRepository;
 import ru.itis.habitio.repository.UserRepository;
-import ru.itis.habitio.security.HabitioUserDetails;
 import ru.itis.habitio.service.mapper.HabitMapper;
 import ru.itis.habitio.web.dto.CreateHabitRequest;
 import ru.itis.habitio.web.dto.response.HabitResponse;
-import ru.itis.habitio.web.rest.HabitResource;
 
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -39,14 +34,19 @@ public class HabitService {
         var user = userRepository.findByUsername(username).orElseThrow(NotFoundException::new);
         return user.getUserHabits().stream()
                 .map(o -> habitMapper.toResponse(o.getHabit()))
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Transactional(propagation = Propagation.REQUIRED)
-    public void saveHabit(CreateHabitRequest createHabitRequest, String username) {
-        var user = userRepository.findByUsername(username).orElseThrow(NotFoundException::new);
+    public void saveHabit(CreateHabitRequest createHabitRequest) {
         var habit = habitMapper.toEntity(createHabitRequest);
         habitRepository.save(habit);
+    }
+
+    @Transactional
+    public void applyHabit(UUID habitId, String username) {
+        var habit = habitRepository.findById(habitId).orElseThrow(NotFoundException::new);
+        var user = userRepository.findByUsername(username).orElseThrow(NotFoundException::new);
         var userHabit = new UsersHabitsEntity(user, habit);
         userHabitsRepository.save(userHabit);
     }
