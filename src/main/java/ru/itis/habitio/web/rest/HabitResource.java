@@ -2,7 +2,6 @@ package ru.itis.habitio.web.rest;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import ru.itis.habitio.service.HabitService;
@@ -36,5 +35,10 @@ public class HabitResource {
     @GetMapping()
     public List<HabitResponse> getUserHabits() {
         return habitService.getUserHabits(AuthUtil.getUserDetails().getUsername());
+    }
+
+    @GetMapping("/pool")
+    public List<HabitResponse> getHabits() {
+        return habitService.getHabits();
     }
 }

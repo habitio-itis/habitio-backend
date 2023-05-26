@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import ru.itis.habitio.entity.HabitEntity;
 import ru.itis.habitio.entity.UsersHabitsEntity;
 import ru.itis.habitio.exception.NotFoundException;
 import ru.itis.habitio.repository.HabitRepository;
@@ -49,5 +50,10 @@ public class HabitService {
         var user = userRepository.findByUsername(username).orElseThrow(NotFoundException::new);
         var userHabit = new UsersHabitsEntity(user, habit);
         userHabitsRepository.save(userHabit);
+    }
+
+    public List<HabitResponse> getHabits() {
+        var all = habitRepository.findAll();
+        return all.stream().map(habitMapper::toResponse).toList();
     }
 }
